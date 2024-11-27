@@ -1,0 +1,474 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>VTTIFY | Ty</title>
+    <link rel="icon" type="image/png" href="favicon.ico">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Parkinsans:wght@300..800&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --primary: #007AFF;
+            --primary-dark: #0056b3;
+            --success: #34C759;
+            --error: #FF3B30;
+            --background: #F2F2F7;
+            --card: #FFFFFF;
+            --text: #1C1C1E;
+            --text-secondary: #6C6C70;
+            --border: #E5E5EA;
+            --shadow: rgba(0, 0, 0, 0.05);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: "Parkinsans", sans-serif;
+            -webkit-font-smoothing: antialiased;
+        }
+
+        body {
+            background: var(--background);
+            color: var(--text);
+            line-height: 1.5;
+            padding: 2rem 1rem;
+        }
+
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+        }
+
+        h1 {
+            font-size: 2rem;
+            font-weight: 700;
+            margin-bottom: 1.5rem;
+            text-align: center;
+            color: var(--text);
+        }
+
+        .card {
+            background: var(--card);
+            border-radius: 16px;
+            box-shadow: 0 2px 8px var(--shadow);
+            padding: 1.5rem;
+            margin-bottom: 1rem;
+            transition: transform 0.2s ease;
+        }
+
+        .collapsible {
+            cursor: pointer;
+        }
+
+        .collapsible-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 0.5rem 0;
+        }
+
+        .collapsible-content {
+            max-height: 0;
+            overflow: hidden;
+            transition: max-height 0.3s ease-out;
+        }
+
+        .collapsible-content.expanded {
+            max-height: 500px;
+        }
+
+        .collapsible-icon {
+            transition: transform 0.3s ease;
+        }
+
+        .collapsible.active .collapsible-icon {
+            transform: rotate(180deg);
+        }
+
+        .instructions {
+            color: var(--text-secondary);
+            font-size: 0.95rem;
+        }
+
+        .instructions ul {
+            margin-left: 1.5rem;
+            margin-top: 0.5rem;
+        }
+
+        .instructions li {
+            margin: 0.5rem 0;
+        }
+
+        .settings-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 1rem;
+            margin-top: 1rem;
+        }
+
+        .setting-item {
+            background: var(--background);
+            padding: 1rem;
+            border-radius: 12px;
+        }
+
+        .setting-item label {
+            display: block;
+            font-size: 0.9rem;
+            color: var(--text-secondary);
+            margin-bottom: 0.5rem;
+        }
+
+        .setting-item input {
+            width: 100%;
+            padding: 0.75rem;
+            border: 1px solid var(--border);
+            border-radius: 10px;
+            font-size: 1rem;
+            background: var(--card);
+            color: var(--text);
+            transition: border-color 0.2s ease;
+            appearance: none;
+            -webkit-appearance: none;
+        }
+
+        .setting-item input:focus {
+            outline: none;
+            border-color: var(--primary);
+        }
+
+        .upload-zone {
+            border: 2px dashed var(--border);
+            padding: 2rem;
+            text-align: center;
+            border-radius: 16px;
+            background: var(--card);
+            transition: all 0.3s ease;
+        }
+
+        .upload-zone.drag-over {
+            border-color: var(--primary);
+            background: rgba(0, 122, 255, 0.05);
+        }
+
+        .upload-zone p {
+            color: var(--text-secondary);
+            margin: 1rem 0;
+        }
+
+        .btn {
+            background: var(--primary);
+            color: white;
+            padding: 0.8rem 1.5rem;
+            border: none;
+            border-radius: 12px;
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+
+        .btn:hover {
+            background: var(--primary-dark);
+            transform: translateY(-1px);
+        }
+
+        .btn:disabled {
+            background: var(--text-secondary);
+            cursor: not-allowed;
+            transform: none;
+        }
+
+        .preview-area {
+            margin-top: 1.5rem;
+        }
+
+        .preview-area textarea {
+            width: 100%;
+            height: 300px;
+            padding: 1rem;
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            font-family: 'SF Mono', monospace;
+            font-size: 0.9rem;
+            resize: vertical;
+            margin-bottom: 1rem;
+            background: var(--card);
+            color: var(--text);
+        }
+
+        .preview-area textarea:focus {
+            outline: none;
+            border-color: var(--primary);
+        }
+
+        .notification {
+            position: fixed;
+            bottom: 2rem;
+            left: 50%;
+            transform: translateX(-50%);
+            padding: 1rem 2rem;
+            border-radius: 12px;
+            color: white;
+            font-weight: 500;
+            opacity: 0;
+            transition: opacity 0.3s ease;
+        }
+
+        .notification.success {
+            background: var(--success);
+        }
+
+        .notification.error {
+            background: var(--error);
+        }
+
+        .notification.visible {
+            opacity: 1;
+        }
+
+        @media (max-width: 600px) {
+            body {
+                padding: 1rem;
+            }
+
+            .card {
+                padding: 1rem;
+            }
+
+            .settings-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>VTTIFY</h1>
+        
+        <div class="card collapsible">
+            <div class="collapsible-header">
+                <h3>Instructions</h3>
+                <svg class="collapsible-icon" width="12" height="12" viewBox="0 0 12 12" fill="none">
+                    <path d="M2 4L6 8L10 4" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+                </svg>
+            </div>
+            <div class="collapsible-content">
+                <div class="instructions">
+                    <ul>
+                        <li>Upload a text file containing your dialogue/subtitles</li>
+                        <li>Each line will be treated as a separate caption</li>
+                        <li>Empty lines will create breaks between caption groups</li>
+                        <li>Timestamps will be automatically generated based on your settings</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+
+        <div class="card collapsible">
+            <div class="collapsible-header">
+                <h3>Settings</h3>
+                <svg class="collapsible-icon" width="12" height="12" viewBox="0 0 12 12" fill="none">
+                    <path d="M2 4L6 8L10 4" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+                </svg>
+            </div>
+            <div class="collapsible-content">
+                <div class="settings-grid">
+                    <div class="setting-item">
+                        <label for="startTime">Start Time (seconds)</label>
+                        <input type="number" id="startTime" value="0" min="0" step="1">
+                    </div>
+                    <div class="setting-item">
+                        <label for="captionDuration">Duration (seconds)</label>
+                        <input type="number" id="captionDuration" value="3" min="1" step="0.5">
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="card">
+            <div class="upload-zone" id="dropZone">
+                <p>Drag and drop your text file here or</p>
+                <input type="file" id="fileInput" accept=".txt" style="display: none;">
+                <button class="btn" onclick="document.getElementById('fileInput').click()">Choose File</button>
+            </div>
+        </div>
+
+        <div class="preview-area">
+            <textarea id="preview" placeholder="VTT preview will appear here..." readonly></textarea>
+            <button class="btn" id="downloadBtn" disabled>Download VTT File</button>
+        </div>
+    </div>
+
+    <div id="successMsg" class="notification success">File converted successfully!</div>
+    <div id="errorMsg" class="notification error"></div>
+
+    <script>
+        const dropZone = document.getElementById('dropZone');
+        const fileInput = document.getElementById('fileInput');
+        const preview = document.getElementById('preview');
+        const downloadBtn = document.getElementById('downloadBtn');
+        const errorMsg = document.getElementById('errorMsg');
+        const successMsg = document.getElementById('successMsg');
+        const startTimeInput = document.getElementById('startTime');
+        const captionDurationInput = document.getElementById('captionDuration');
+
+        document.querySelectorAll('.collapsible').forEach(collapsible => {
+            collapsible.addEventListener('click', function() {
+                this.classList.toggle('active');
+                const content = this.querySelector('.collapsible-content');
+                content.classList.toggle('expanded');
+            });
+        });
+
+        ['dragenter', 'dragover', 'dragleave', 'drop'].forEach(eventName => {
+            dropZone.addEventListener(eventName, preventDefaults, false);
+            document.body.addEventListener(eventName, preventDefaults, false);
+        });
+
+        ['dragenter', 'dragover'].forEach(eventName => {
+            dropZone.addEventListener(eventName, highlight, false);
+        });
+
+        ['dragleave', 'drop'].forEach(eventName => {
+            dropZone.addEventListener(eventName, unhighlight, false);
+        });
+
+        dropZone.addEventListener('drop', handleDrop, false);
+        fileInput.addEventListener('change', handleFileSelect, false);
+
+        [startTimeInput, captionDurationInput].forEach(input => {
+            input.addEventListener('change', () => {
+                if (preview.value) {
+                    handleFile(lastFile);
+                }
+            });
+        });
+
+        let lastFile = null;
+
+        function preventDefaults(e) {
+            e.preventDefault();
+            e.stopPropagation();
+        }
+
+        function highlight(e) {
+            dropZone.classList.add('drag-over');
+        }
+
+        function unhighlight(e) {
+            dropZone.classList.remove('drag-over');
+        }
+
+        function handleDrop(e) {
+            const dt = e.dataTransfer;
+            const file = dt.files[0];
+            handleFile(file);
+        }
+
+        function handleFileSelect(e) {
+            const file = e.target.files[0];
+            handleFile(file);
+        }
+
+        function handleFile(file) {
+            if (!file) return;
+            
+            if (file.type !== 'text/plain') {
+                showError('Please upload a .txt file');
+                return;
+            }
+
+            lastFile = file;
+            const reader = new FileReader();
+            reader.onload = function(e) {
+                try {
+                    const vttContent = convertToVTT(e.target.result);
+                    preview.value = vttContent;
+                    downloadBtn.disabled = false;
+                    showSuccess('File converted successfully!');
+                } catch (error) {
+                    showError(error.message);
+                }
+            };
+            reader.readAsText(file);
+        }
+
+        function convertToVTT(text) {
+            const startTime = parseFloat(startTimeInput.value) || 0;
+            const captionDuration = parseFloat(captionDurationInput.value) || 3;
+
+            let vttContent = 'WEBVTT\n\n';
+            let currentTime = startTime;
+            
+            const lines = text.split('\n');
+            
+            for (let i = 0; i < lines.length; i++) {
+                const line = lines[i].trim();
+                
+                if (line === '') {
+                    continue;
+                }
+
+                const startTimestamp = formatTimestamp(currentTime);
+                const endTimestamp = formatTimestamp(currentTime + captionDuration);
+                
+                vttContent += `${startTimestamp} --> ${endTimestamp}\n${line}\n\n`;
+                
+                currentTime += captionDuration;
+            }
+
+            return vttContent;
+        }
+
+        function formatTimestamp(seconds) {
+            const hours = Math.floor(seconds / 3600);
+            seconds %= 3600;
+            const minutes = Math.floor(seconds / 60);
+            seconds = Math.floor(seconds % 60);
+            const milliseconds = Math.floor((seconds % 1) * 1000);
+            
+            return `${padZero(hours)}:${padZero(minutes)}:${padZero(Math.floor(seconds))}.${padZero(milliseconds, 3)}`;
+        }
+
+        function padZero(num, length = 2) {
+            return num.toString().padStart(length, '0');
+        }
+
+        function showError(message) {
+            errorMsg.textContent = message;
+            errorMsg.classList.add('visible');
+            successMsg.classList.remove('visible');
+            preview.value = '';
+            downloadBtn.disabled = true;
+            setTimeout(() => {
+                errorMsg.classList.remove('visible');
+            }, 3000);
+        }
+
+        function showSuccess(message) {
+            successMsg.textContent = message;
+            successMsg.classList.add('visible');
+            errorMsg.classList.remove('visible');
+            setTimeout(() => {
+                successMsg.classList.remove('visible');
+            }, 3000);
+        }
+
+        downloadBtn.addEventListener('click', () => {
+            const blob = new Blob([preview.value], { type: 'text/vtt' });
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = 'subtitles.vtt';
+            document.body.appendChild(a);
+            a.click();
+            document.body.removeChild(a);
+            URL.revokeObjectURL(url);
+        });
+    </script>
+</body>
+</html>
