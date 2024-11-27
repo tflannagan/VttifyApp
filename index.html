@@ -45,9 +45,53 @@
         h1 {
             font-size: 2rem;
             font-weight: 700;
-            margin-bottom: 1.5rem;
+            margin-bottom: 1rem;
             text-align: center;
             color: var(--text);
+        }
+
+        
+        .header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1rem;
+        }
+
+        h1 {
+            font-size: 2rem;
+            font-weight: 700;
+            color: var(--text);
+        }
+
+        .download-btn {
+            background: var(--card);
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            width: 48px;
+            height: 48px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            opacity: 0.5;
+        }
+
+        .download-btn:hover {
+            background: var(--background);
+            transform: translateY(-1px);
+        }
+
+        .download-btn:disabled {
+            cursor: not-allowed;
+            opacity: 0.3;
+        }
+
+        .download-btn svg {
+            width: 24px;
+            height: 24px;
+            fill: var(--text);
         }
 
         .card {
@@ -95,7 +139,7 @@
 
         .instructions ul {
             margin-left: 1.5rem;
-            margin-top: 0.5rem;
+            margin-top: 0.2rem;
         }
 
         .instructions li {
@@ -247,8 +291,17 @@
 </head>
 <body>
     <div class="container">
-        <h1>VTTIFY</h1>
-        
+        <div class="header">
+            <h1>VTTIFY</h1>
+            <button class="download-btn" id="downloadBtn" disabled title="Download VTT file">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/>
+                    <polyline points="7 10 12 15 17 10"/>
+                    <line x1="12" y1="15" x2="12" y2="3"/>
+                </svg>
+            </button>
+        </div>
+
         <div class="card collapsible">
             <div class="collapsible-header">
                 <h3>Instructions</h3>
@@ -299,7 +352,6 @@
 
         <div class="preview-area">
             <textarea id="preview" placeholder="VTT preview will appear here..." readonly></textarea>
-            <button class="btn" id="downloadBtn" disabled>Download VTT File</button>
         </div>
     </div>
 
@@ -389,6 +441,7 @@
                     const vttContent = convertToVTT(e.target.result);
                     preview.value = vttContent;
                     downloadBtn.disabled = false;
+                    downloadBtn.style.opacity = '1';
                     showSuccess('File converted successfully!');
                 } catch (error) {
                     showError(error.message);
